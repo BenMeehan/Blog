@@ -1,0 +1,12 @@
+.list-element {
+  display: none;
+}
+.list .list-element:nth-child(1) {
+  display: block;
+}
+.list .list-element:nth-child(2) {
+  display: block;
+}
+.list .list-element:nth-child(3) {
+  display: block;
+}
