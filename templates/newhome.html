@@ -1,0 +1,29 @@
+{%include "header.html"%}
+    <title>New Home</title>
+    {{ckeditor.load(pkg_type="full-all")}}
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-10 col-lg-8 mx-auto">
+                <form action="{{url_for('set_home')}}" method="POST">
+                    <div>
+                        <h5>Thumbnail:</h5>
+                        <input type="text" class="form-control" name="home_image">
+                    </div>
+                    <br>
+                    <div>
+                        <h5>Quote:</h5>
+                        <input type="text" class="form-control" name="quote">
+                    </div>
+                    <br>
+                    <div>
+                        <button class="btn btn-primary"type="submit">Change</button>
+                    </div>
+                </form>
+            </div>                                                                    
+        </div>
+    </div>
+    {%include "footer.html"%}
+</body>
+</html>

@@ -1,0 +1,44 @@
+{%include "header.html"%}
+    <title>New Post</title>
+    {{ckeditor.load(pkg_type="full-all")}}
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-10 col-lg-8 mx-auto">
+                <form action="{{url_for('edit_post',id=post.id)}}" method="POST">
+                    <div>
+                        <h5>Title:</h5>
+                        <input type="text" class="form-control" name="title" value="{{post.title}}">
+                    </div>
+                    <br>
+                    <div>
+                        <h5>Sub-Title:</h5>
+                        <input type="text" class="form-control" name="subtitle" value="{{post.subtitle}}">
+                    </div>
+                    <br>
+                    <div>
+                        <h5>Image:</h5>
+                        <input type="text" class="form-control" name="image_url" value="{{post.image_url}}">
+                    </div>
+                    <br>
+                    <div>
+                        <h5>Date:</h5>
+                        <input type="text" class="form-control" name="date" value="{{post.date}}">
+                    </div>
+                    <br>
+                    <div>
+                        <h5>Body:</h5>
+                        {{ckeditor.create(value=post.body)}}
+                    </div>
+                    <br>
+                    <div>
+                        <button class="btn btn-primary"type="submit">Edit Post</button>
+                    </div>
+                </form>
+            </div>                                                                    
+        </div>
+    </div>
+    {%include "footer.html"%}
+</body>
+</html>
