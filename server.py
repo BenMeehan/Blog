@@ -1,3 +1,4 @@
+from os import environ
 from flask import Flask, render_template, request, redirect, url_for
 from post import Post
 import smtplib
@@ -16,7 +17,8 @@ post_list = []
 app = Flask("__name__")
 ckeditor = CKEditor(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get(
+    'DATABASE_URL') or 'sqlite:///posts.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
