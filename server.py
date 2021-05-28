@@ -9,6 +9,8 @@ from flask_ckeditor import CKEditor
 MAIL_NAME = "spacetimebenmeehan@gmail.com"
 MAIL_PASSWORD = "aval1234"
 
+SECRET_KEY = "aval123"
+
 post_list = []
 
 app = Flask("__name__")
@@ -97,54 +99,74 @@ def contact():
         return render_template("contact.html", sent=True)
 
 
-@app.route('/new_home', methods=['GET', 'POST'])
-def set_home():
-    if request.method == 'GET':
-        return render_template("newhome.html")
-    elif request.method == 'POST':
-        result = db.session.query(HomeContent).all()
-        new_home = HomeContent(id=1,
-                               home_image=request.form['home_image'], quote=request.form['quote'])
-        if(len(result) == 0):
-            db.session.add(new_home)
-            db.session.commit()
-        else:
-            old = HomeContent.query.get(1)
-            db.session.delete(old)
-            db.session.commit()
-            db.session.add(new_home)
-            db.session.commit()
+@app.route('/new_home/<key>', methods=['GET', 'POST'])
+def set_home(key):
+    if key == SECRET_KEY:
+        if request.method == 'GET':
+            return render_template("newhome.html", k=SECRET_KEY)
+        elif request.method == 'POST':
+            result = db.session.query(HomeContent).all()
+            new_home = HomeContent(id=1,
+                                   home_image=request.form['home_image'], quote=request.form['quote'])
+            if(len(result) == 0):
+                db.session.add(new_home)
+                db.session.commit()
+            else:
+                old = HomeContent.query.get(1)
+                db.session.delete(old)
+                db.session.commit()
+                db.session.add(new_home)
+                db.session.commit()
+            return redirect(url_for('home'))
+    else:
         return redirect(url_for('home'))
 
 
-@app.route("/new_post", methods=['GET', 'POST'])
-def new_post():
-    if request.method == 'GET':
-        return render_template("add.html")
-    elif request.method == 'POST':
-        new_post = Post(image_url=request.form['image_url'], title=request.form['title'],
-                        subtitle=request.form['subtitle'], body=request.form['ckeditor'], date=request.form['date'])
-        db.session.add(new_post)
-        db.session.commit()
+@app.route("/new_post/<key>", methods=['GET', 'POST'])
+def new_post(key):
+    if key == SECRET_KEY:
+        if request.method == 'GET':
+            return render_template("add.html", k=SECRET_KEY)
+        elif request.method == 'POST':
+            new_post = Post(image_url=request.form['image_url'], title=request.form['title'],
+                            subtitle=request.form['subtitle'], body=request.form['ckeditor'], date=request.form['date'])
+            db.session.add(new_post)
+            db.session.commit()
+            return redirect(url_for('home'))
+    else:
         return redirect(url_for('home'))
 
 
-@app.route('/edit_post/<int:id>', methods=['GET', 'POST'])
-def edit_post(id):
-    if request.method == 'GET':
-        required_post = None
-        for i in post_list:
-            if i['id'] == id:
-                required_post = i
-        return render_template("edit.html", post=required_post)
-    elif request.method == 'POST':
-        edited = Post.query.get(id)
-        edited.image_url = request.form['image_url']
-        edited.title = title = request.form['title']
-        edited.subtitle = subtitle = request.form['subtitle']
-        edited.body = body = request.form['ckeditor']
-        edited.date = date = request.form['date']
+@app.route('/edit_post/<int:id>/<key>', methods=['GET', 'POST'])
+def edit_post(id, key):
+    if key == SECRET_KEY:
+        if request.method == 'GET':
+            required_post = None
+            for i in post_list:
+                if i['id'] == id:
+                    required_post = i
+            return render_template("edit.html", post=required_post, k=SECRET_KEY)
+        elif request.method == 'POST':
+            edited = Post.query.get(id)
+            edited.image_url = request.form['image_url']
+            edited.title = title = request.form['title']
+            edited.subtitle = subtitle = request.form['subtitle']
+            edited.body = body = request.form['ckeditor']
+            edited.date = date = request.form['date']
+            db.session.commit()
+            return redirect(url_for('home'))
+    else:
+        return redirect(url_for('home'))
+
+
+@app.route("/delete_post/<int:id>/<key>")
+def delete_post(id, key):
+    if key == SECRET_KEY:
+        deleted = Post.query.get(id)
+        db.session.delete(deleted)
         db.session.commit()
+        return redirect(url_for('home'))
+    else:
         return redirect(url_for('home'))
 
 
